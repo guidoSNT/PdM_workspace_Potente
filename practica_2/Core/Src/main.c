@@ -273,6 +273,9 @@ bool_t delayRead(delay_t *delay) {
 	if (delay == NULL)
 		return false;
 
+	if(delay->duration == 0)
+		return false;
+
 	// Start the delay if it's not running
 	if (!delay->running) {
 		delay->startTime = HAL_GetTick();
