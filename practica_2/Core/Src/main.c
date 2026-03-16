@@ -24,6 +24,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdbool.h> //! Include to have the bool type for bool_t definition.
+#include <stdint.h>
 
 /* USER CODE END Includes */
 
@@ -284,7 +285,7 @@ bool_t delayRead(delay_t *delay) {
 	}
 
 	// Checks if the timer has finished
-	if (HAL_GetTick() > delay->startTime + delay->duration) {
+	if ( (uint32_t) (HAL_GetTick() - delay->startTime) > delay->duration) {
 		delay->running = false;
 		return true;
 	}
