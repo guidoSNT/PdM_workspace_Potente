@@ -14,13 +14,11 @@ static delay_t dly;
 static bool_t pressed;
 
 static void buttonPressed() {
-  // Here it would use the buttonpresed if not for the main usage for the pwm:
-  // HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
 }
 
 static void buttonReleased() {
-  // Here it would use the buttonreleased if not for the main usage for the pwm:
-  // HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
 }
 
 bool_t readKey() {

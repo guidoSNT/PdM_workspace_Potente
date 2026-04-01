@@ -22,9 +22,6 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "API_debounce.h"
-#include "API_delay.h"
-#include "stm32f4xx_hal_gpio.h"
-#include <stdint.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -34,10 +31,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define INIT_PWM_DELAY 50
-
-#define PWM_MAX 50  //! Time for the pwm max freq (the 100ms one)
-#define PWM_MIN 200 //! Time for the min pwm
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -49,7 +42,6 @@
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-static delay_t dly; //! local delay for the pwm simil
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -71,7 +63,7 @@ static void MX_USART2_UART_Init(void);
 int main(void) {
 
   /* USER CODE BEGIN 1 */
-  tick_t pwm_time = PWM_MAX; //! Time for the pwm freq that is used for switching
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -98,11 +90,6 @@ int main(void) {
 
   // init both the debounce and the delay
   debounceFSM_init();
-  delayInit(&dly, INIT_PWM_DELAY);
-
-  // start the delay with the max freq
-  delayWrite(&dly, pwm_time);
-  delayRead(&dly);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -110,16 +97,6 @@ int main(void) {
   while (1) {
     // Update the fsm
     debounceFSM_update();
-
-    // toggle the switching time when using the button
-    if (delayRead(&dly)) {
-      HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-
-      if (readKey()) {
-        pwm_time = (pwm_time == PWM_MIN) ? PWM_MAX : PWM_MIN;
-        delayWrite(&dly, pwm_time);
-      }
-    }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

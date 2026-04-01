@@ -1,10 +1,10 @@
 # Practica 4
 
-Este ejercicio pide implementar una maquina de estados finitos para generar una estrategia anti rebote de un boton.
+Este ejercicio pide implementar una maquina de estados finitos para generar una estrategia anti rebote de un boton. Al presionar se prende o apaga un led.
 
-Al presionar se modifica la frequencia de la PWM con la que titila un LED en la placa.
+Cabe aclarar que este es el ej1 y practica_4_2 es el ej2.
 
-> El ej1 con buttonPressed lo deje pero no se usa porque el main con el readkey hace el cambio de frequencia.
+> En la API de debounce se encuentra la funcion ReadKey pero no se usa. Simplemente la deje para que ambas versiones sean iguales.
 
 ## A tener en cuenta
 
