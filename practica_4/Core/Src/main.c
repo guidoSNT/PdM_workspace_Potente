@@ -71,7 +71,7 @@ static void MX_USART2_UART_Init(void);
 int main(void) {
 
   /* USER CODE BEGIN 1 */
-  tick_t pwm_time = PWM_MAX;
+  tick_t pwm_time = PWM_MAX; //! Time for the pwm freq that is used for switching
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -108,8 +108,10 @@ int main(void) {
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1) {
+    // Update the fsm
     debounceFSM_update();
 
+    // toggle the switching time when using the button
     if (delayRead(&dly)) {
       HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 
