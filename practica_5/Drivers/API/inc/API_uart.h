@@ -3,6 +3,8 @@
 #include "API_delay.h" // for the bool_t
 #include "stm32f4xx_hal.h"
 
+#define API_UART_MAX_SIZE 256 //! Max size for transmisions
+
 #define API_UART_INSTANCE USART2 //! USART instance to use
 #define API_UART_INSTANCE_STR "USART2"
 #define API_UART_BUADRATE 115200       //! Buadrate in bd of the USART
@@ -48,7 +50,7 @@ void uartSendString(uint8_t *pstring);
  * @brief Sends NULL terminated string through UART.
  *
  * @param[in] pstring Pointer to the NULL terminated string to send.
- * @param[in] size Size of the string to send with the NULL.
+ * @param[in] size Size of the string to send without the NULL.
  *
  * @retval None
  */
