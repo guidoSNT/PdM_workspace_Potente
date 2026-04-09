@@ -1,14 +1,9 @@
 #include "API_cmdparser.h"
-#include "API_delay.h"
 #include "API_uart.h"
-#include "stm32f4xx_hal_gpio.h"
-#include "stm32f4xx_hal_uart.h"
-#include <ctype.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <ctype.h>   //! for toupper
+#include <stdio.h>   //! for the snprintf
+#include <stdlib.h>  //! for the strtol
+#include <string.h>  //! for all string manipulation
 
 // To call the uart api easier
 #define SEND(str) uartSendStringSize((uint8_t *) (str), (uint16_t) (sizeof(str) - 1))
@@ -122,7 +117,7 @@ void cmdPoll(void) {
             if (uartReceiveCharNonBlocking((uint8_t *) &curr_var) == false) { break; }
 
             // End of string
-            if ((char) curr_var == RETURN_CHAR || (char) curr_var == NEW_LINE_CHAR) {
+            if ((char) curr_var == RETURN_CHAR || (char) curr_var == NEW_LINE_CHAR || (char) curr_var == EOL) {
                 cmdEndStr();
                 cmd_state = CMD_PROCESS;
                 break;
@@ -190,7 +185,7 @@ static int32_t cmdGetNum(char *buffer) {
     if (*buf_p == EOL || *buf_p == RETURN_CHAR || *buf_p == NEW_LINE_CHAR) return ERROR_CMD_ARG;
 
     int32_t result = strtol(buf_p, &end, BASE_GET_BAUD);
-    // To avoid the parser from failing 
+    // To avoid the parser from failing
     // Now it's BAUD=\0...
     *buf_p         = EOL;
 

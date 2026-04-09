@@ -1,6 +1,5 @@
 #include "API_uart.h"
-#include "stm32f4xx_hal_def.h"
-#include "stm32f4xx_hal_uart.h"
+#include "stm32f4xx_hal.h"
 #include <string.h>                                  //! for the strnlen
 
 static UART_HandleTypeDef uart_handle;               //! Handler for the HAL uart comms
