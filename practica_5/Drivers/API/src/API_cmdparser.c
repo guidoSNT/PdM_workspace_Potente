@@ -3,6 +3,7 @@
 #include "API_uart.h"
 #include "stm32f4xx_hal_gpio.h"
 #include "stm32f4xx_hal_uart.h"
+#include <ctype.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -32,6 +33,9 @@ static void cmd_err_str(cmd_status_t status);
 
 /** @brief Process the current rx_buf. */
 static cmd_result cmdProcessLine();
+
+/** @brief Converts to upper case the rx_buff. */
+static void cmd_uppercase(void);
 
 /*--------------- Handler definitions for the commands --------------*/
 // TODO: THIS SHOULD BE IN A  DIFFERENT FILE BUT FOR NOW (FOREVER!?) IT WORKS
@@ -91,11 +95,11 @@ void cmdPoll(void) {
 
             // Test if the first char is correct and handle the error
             bool_t start_condition = true;
-            for (uint8_t i = 0; i < sizeof(invalid_list); i++){
-              if(curr_var == invalid_list[i]){
-                start_condition = false;
-                break;
-              }
+            for (uint8_t i = 0; i < sizeof(invalid_list); i++) {
+                if (curr_var == invalid_list[i]) {
+                    start_condition = false;
+                    break;
+                }
             }
             if (!start_condition) {
                 cmd_state       = CMD_ERROR;
@@ -165,6 +169,13 @@ static void resetRx() {
     memset(rx_buf, 0, CMD_MAX_LINE);
 }
 
+static void cmd_uppercase() {
+    for (uint8_t *p = rx_buf; *p != EOL; p++) {
+        if (p - rx_buf >= CMD_MAX_LINE) return;
+        *p = (uint8_t) toupper(*p);
+    }
+}
+
 static int32_t cmdGetNum(char *buffer) {
     char *end = NULL;
 
@@ -198,6 +209,8 @@ static cmd_result cmdProcessLine() {
         res.status = CMD_ERR_OVERFLOW;
         return res;
     }
+
+    cmd_uppercase();
 
     // Get the case where = is used
     eq = strchr((char *) rx_buf, SETTER_CHAR);
