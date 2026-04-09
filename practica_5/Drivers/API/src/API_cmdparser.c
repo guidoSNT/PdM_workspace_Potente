@@ -10,9 +10,8 @@
 #include <string.h>
 
 // To call the uart api easier
-#define SEND(str)   uartSendStringSize((uint8_t *) (str), (uint16_t) (sizeof(str) - 1))
+#define SEND(str) uartSendStringSize((uint8_t *) (str), (uint16_t) (sizeof(str) - 1))
 
-#define LED_PARSER_ LD2_GPIO_Port
 static bool_t     parser_init = false;   //! To check of the init has been called
 static cmd_fsm_t  cmd_state;             //! the current state of the FSM
 static cmd_result curr_cmd;              //! the current cmd found
@@ -28,9 +27,14 @@ static bool_t cmdEndStr();
 /** @brief reset the buffer. */
 static void resetRx();
 
+/** @brief Print the error status. */
+static void cmd_err_str(cmd_status_t status);
+
 /** @brief Process the current rx_buf. */
 static cmd_result cmdProcessLine();
 
+/*--------------- Handler definitions for the commands --------------*/
+// TODO: THIS SHOULD BE IN A  DIFFERENT FILE BUT FOR NOW (FOREVER!?) IT WORKS
 /** @brief Get the number from the buffer after an '='. */
 static int32_t cmdGetNum(char *buffer);
 
@@ -62,25 +66,42 @@ static cmd_entry cmds[] = {
     {     "BAUD=",         NULL},
     {        NULL,         NULL}  // THIS NULL IS IMPORTANT TO AVOID GOING OUT OF BOUNDS
 };  //! List for the commands (this could be done with a linked list or similar)
+/*--------------- Handler definitions for the commands --------------*/
+
+static const char invalid_list[] = {EOL, RETURN_CHAR, NEW_LINE_CHAR, HASHTAG_CHAR, DASH_CHAR, SPACE_CHAR, TAB_CHAR};  //! list for the invalid start chars
 
 void cmdParserInit() {
     cmd_state   = CMD_IDLE;
-    parser_init = uartInit();  // Error handler needed
+    parser_init = uartInit();
     cmdPrintHelp();
 }
 
-void cmdPrintHelp(void) { cmdHelp(0); }
+void cmdPrintHelp(void) { cmdHelp(ERROR_CMD_ARG); }
 
 void cmdPoll(void) {
-    uint8_t curr_var = EOL;
-    bool_t  overflow;
+    char   curr_var = EOL;
+    bool_t overflow;
 
     // This should have a return type or an error handler to show the error
     if (!parser_init) return;
 
     switch (cmd_state) {
         case CMD_IDLE:
-            if (uartReceiveCharNonBlocking(&curr_var) == false) { break; }
+            if (uartReceiveCharNonBlocking((uint8_t *) &curr_var) == false) { break; }
+
+            // Test if the first char is correct and handle the error
+            bool_t start_condition = true;
+            for (uint8_t i = 0; i < sizeof(invalid_list); i++){
+              if(curr_var == invalid_list[i]){
+                start_condition = false;
+                break;
+              }
+            }
+            if (!start_condition) {
+                cmd_state       = CMD_ERROR;
+                curr_cmd.status = CMD_ERR_SYNTAX;
+                break;
+            }
 
             // If non-null go to receiving and move the pointer to next place
             if ((char) curr_var != EOL) {
@@ -91,7 +112,7 @@ void cmdPoll(void) {
             break;
 
         case CMD_RECEIVING:
-            if (uartReceiveCharNonBlocking(&curr_var) == false) { break; }
+            if (uartReceiveCharNonBlocking((uint8_t *) &curr_var) == false) { break; }
 
             // End of string
             if ((char) curr_var == RETURN_CHAR || (char) curr_var == NEW_LINE_CHAR) {
@@ -120,6 +141,7 @@ void cmdPoll(void) {
 
         case CMD_ERROR:
             cmd_state = CMD_IDLE;
+            cmd_err_str(curr_cmd.status);
             resetRx();
             break;
     }
@@ -153,7 +175,7 @@ static int32_t cmdGetNum(char *buffer) {
     // if empty after separator
     if (*buffer == EOL || *buffer == RETURN_CHAR || *buffer == NEW_LINE_CHAR) return ERROR_CMD_ARG;
 
-    int32_t result = strtol(buffer, &end, 10);
+    int32_t result = strtol(buffer, &end, BASE_GET_BAUD);
 
     if (*end != EOL && *end != RETURN_CHAR && *end != NEW_LINE_CHAR) return ERROR_CMD_ARG;
     return result;
@@ -178,7 +200,7 @@ static cmd_result cmdProcessLine() {
     }
 
     // Get the case where = is used
-    eq = strchr((char *) rx_buf, '=');
+    eq = strchr((char *) rx_buf, SETTER_CHAR);
     if (eq != NULL) {
         arg = cmdGetNum(eq);
         if (arg == ERROR_CMD_ARG) {
@@ -202,6 +224,21 @@ static cmd_result cmdProcessLine() {
     // Unknown command
     res.status = CMD_ERR_UNKNOWN;
     return res;
+}
+
+static void cmd_err_str(cmd_status_t status) {
+    const char *err_str[] = {
+        [CMD_OK]           = "OK",
+        [CMD_ERR_OVERFLOW] = "OVERFLOW",
+        [CMD_ERR_SYNTAX]   = "SYNTAX",
+        [CMD_ERR_UNKNOWN]  = "UNKNOWN CMD",
+        [CMD_ERR_ARG]      = "BAD ARG",
+        [CMD_EMPTY_CMD]    = "EMPTY CMD",
+    };
+
+    char     buf[HANDLER_BUFFERS_LEN];
+    uint16_t len = (uint16_t) snprintf(buf, sizeof(buf), "[ERR] %s\r\n", err_str[status]);
+    uartSendStringSize((uint8_t *) buf, len);
 }
 
 /*--------------- Handler for the commands --------------*/
@@ -241,6 +278,6 @@ static void cmdStatus(int32_t arg) {
 
 static void cmdBaudGet(int32_t arg) {
     char     str[HANDLER_BUFFERS_LEN];
-    uint16_t len = (uint16_t) snprintf(str, sizeof(str), "[BAUD] %u\r\n", uartGetBaud());
+    uint16_t len = (uint16_t) snprintf(str, sizeof(str), "[BAUD] %lu\r\n", uartGetBaud());
     uartSendStringSize((uint8_t *) str, len);
 }

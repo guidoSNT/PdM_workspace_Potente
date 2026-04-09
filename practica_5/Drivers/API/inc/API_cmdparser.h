@@ -6,6 +6,8 @@
 #define CMD_MAX_TOKENS      3              //! COMANDO + maximo de argumentos
 #define ERROR_CMD_ARG       -1             //! Return for the parser when the number getter fails
 #define HANDLER_BUFFERS_LEN 32             //! For the local buffers
+#define BASE_GET_BAUD       10
+#define SETTER_CHAR         '='            //! When setting the buad, the separator is this
 
 typedef enum {
     CMD_OK = 0,                            //! On success

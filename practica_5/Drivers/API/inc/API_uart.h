@@ -6,6 +6,10 @@
 #define EOL                           '\0'
 #define RETURN_CHAR                   '\r'
 #define NEW_LINE_CHAR                 '\n'
+#define HASHTAG_CHAR                  '#'
+#define DASH_CHAR                     '/'
+#define SPACE_CHAR                    ' '
+#define TAB_CHAR                      '\t'
 #define API_UART_MAX_SIZE             256                   //! Max size for transmisions
 #define API_UART_ONE_BIT_RECEIVE      1                     //! To set the receive to one bit
 #define API_UART_NON_BLOCKING_TIMEOUT 0                     //! To make it non-blocking
@@ -91,5 +95,5 @@ bool_t uartReceiveCharNonBlocking(uint8_t *pstring);
  *
  * @retval Baudrate
  */
-int32_t uartGetBaud();
+uint32_t uartGetBaud();
 #endif /* API_INC_API_UART_H_ */

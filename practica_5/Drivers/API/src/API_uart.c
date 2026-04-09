@@ -70,4 +70,4 @@ bool_t uartReceiveCharNonBlocking(uint8_t *pstring) {
     return (st_comm == HAL_OK) ? true : false;
 }
 
-int32_t uartGetBaud() { return uart_handle.Init.BaudRate; }
+uint32_t uartGetBaud() { return uart_handle.Init.BaudRate; }
