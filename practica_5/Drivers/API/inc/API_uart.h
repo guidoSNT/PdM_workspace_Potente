@@ -96,4 +96,11 @@ bool_t uartReceiveCharNonBlocking(uint8_t *pstring);
  * @retval Baudrate
  */
 uint32_t uartGetBaud();
+
+/**
+ * @brief Reinit and set a new baudrate.
+ *
+ * @retval True on success else false
+ */
+bool_t uartSetBaud(uint32_t baudrate);
 #endif /* API_INC_API_UART_H_ */

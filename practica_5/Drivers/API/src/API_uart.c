@@ -71,3 +71,19 @@ bool_t uartReceiveCharNonBlocking(uint8_t *pstring) {
 }
 
 uint32_t uartGetBaud() { return uart_handle.Init.BaudRate; }
+
+bool_t uartSetBaud(uint32_t baudrate) {
+    if (baudrate == 0) return false;
+
+    // reinit the uart
+    HAL_UART_DeInit(&uart_handle);
+    uart_handle.Init.BaudRate = baudrate;
+
+    if (HAL_UART_Init(&uart_handle) != HAL_OK) {
+        // Try with the old one
+        uart_handle.Init.BaudRate = API_UART_BUADRATE;
+        HAL_UART_Init(&uart_handle);
+        return false;
+    }
+    return true;
+}

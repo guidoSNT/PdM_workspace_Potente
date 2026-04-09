@@ -60,6 +60,9 @@ static void cmdStatus(int32_t arg);
 /** @brief Print the status of the led. */
 static void cmdBaudGet(int32_t arg);
 
+/** @brief change the baudrate. */
+static void cmdBaudSet(int32_t arg);
+
 static cmd_entry cmds[] = {
     {      "HELP",      cmdHelp},
     {    "LED ON",     cmdLedOn},
@@ -67,7 +70,7 @@ static cmd_entry cmds[] = {
     {"LED TOGGLE", cmdLedToggle},
     {    "STATUS",    cmdStatus},
     {     "BAUD?",   cmdBaudGet},
-    {     "BAUD=",         NULL},
+    {     "BAUD=",   cmdBaudSet},
     {        NULL,         NULL}  // THIS NULL IS IMPORTANT TO AVOID GOING OUT OF BOUNDS
 };  //! List for the commands (this could be done with a linked list or similar)
 /*--------------- Handler definitions for the commands --------------*/
@@ -177,18 +180,22 @@ static void cmd_uppercase() {
 }
 
 static int32_t cmdGetNum(char *buffer) {
-    char *end = NULL;
+    char *end = NULL, *buf_p = buffer;
 
     // Fail if empty or if the buffer isn't pointing to the separator
-    if (buffer == NULL || *buffer != '=') return ERROR_CMD_ARG;
-    buffer++;
+    if (buf_p == NULL || *buf_p != SETTER_CHAR) return ERROR_CMD_ARG;
+    buf_p++;
 
     // if empty after separator
-    if (*buffer == EOL || *buffer == RETURN_CHAR || *buffer == NEW_LINE_CHAR) return ERROR_CMD_ARG;
+    if (*buf_p == EOL || *buf_p == RETURN_CHAR || *buf_p == NEW_LINE_CHAR) return ERROR_CMD_ARG;
 
-    int32_t result = strtol(buffer, &end, BASE_GET_BAUD);
+    int32_t result = strtol(buf_p, &end, BASE_GET_BAUD);
+    // To avoid the parser from failing 
+    // Now it's BAUD=\0...
+    *buf_p         = EOL;
 
     if (*end != EOL && *end != RETURN_CHAR && *end != NEW_LINE_CHAR) return ERROR_CMD_ARG;
+
     return result;
 }
 
@@ -293,4 +300,19 @@ static void cmdBaudGet(int32_t arg) {
     char     str[HANDLER_BUFFERS_LEN];
     uint16_t len = (uint16_t) snprintf(str, sizeof(str), "[BAUD] %lu\r\n", uartGetBaud());
     uartSendStringSize((uint8_t *) str, len);
+}
+
+static void cmdBaudSet(int32_t arg) {
+    char     str[HANDLER_BUFFERS_LEN];
+    uint16_t len = (uint16_t) snprintf(str, sizeof(str), "Setting baudrate to %ld\r\n", arg);
+    uartSendStringSize((uint8_t *) str, len);
+
+    // set the baudrate
+    bool_t res = uartSetBaud(arg);
+    if (!res) {
+        SEND("Failed to set the baudrate");
+        return;
+    }
+
+    SEND("Baudrate changed");
 }
