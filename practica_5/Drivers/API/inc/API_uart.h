@@ -1,9 +1,11 @@
 #ifndef API_INC_API_UART_H_
 #define API_INC_API_UART_H_
-#include "API_delay.h"                                      // for the bool_t
+#include "API_delay.h"  // for the bool_t
 #include "stm32f4xx_hal.h"
 
 #define EOL                           '\0'
+#define RETURN_CHAR                   '\r'
+#define NEW_LINE_CHAR                 '\n'
 #define API_UART_MAX_SIZE             256                   //! Max size for transmisions
 #define API_UART_ONE_BIT_RECEIVE      1                     //! To set the receive to one bit
 #define API_UART_NON_BLOCKING_TIMEOUT 0                     //! To make it non-blocking

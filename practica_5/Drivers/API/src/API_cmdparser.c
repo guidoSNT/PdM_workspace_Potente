@@ -1,6 +1,7 @@
 #include "API_cmdparser.h"
 #include "API_delay.h"
 #include "API_uart.h"
+#include "stm32f4xx_hal_gpio.h"
 #include "stm32f4xx_hal_uart.h"
 #include <stdint.h>
 #include <stdbool.h>
@@ -93,7 +94,7 @@ void cmdPoll(void) {
             uartReceiveCharNonBlocking(&curr_var);
 
             // End of string
-            if ((char) curr_var == '\r' || (char) curr_var == '\n') {
+            if ((char) curr_var == RETURN_CHAR || (char) curr_var == NEW_LINE_CHAR) {
                 cmdEndStr();
                 cmd_state = CMD_PROCESS;
                 break;
@@ -133,7 +134,7 @@ static bool_t cmdAppend(uint8_t value) {
 
 static bool_t cmdEndStr() {
     if (rx_buf_p - rx_buf >= CMD_MAX_LINE) rx_buf_p = rx_buf + CMD_MAX_LINE - 1;
-    *rx_buf_p = '\0';
+    *rx_buf_p = EOL;
     return true;
 }
 
@@ -150,11 +151,11 @@ static int32_t cmdGetNum(char *buffer) {
     buffer++;
 
     // if empty after separator
-    if (*buffer == EOL || *buffer == '\r' || *buffer == '\n') return ERROR_CMD_ARG;
+    if (*buffer == EOL || *buffer == RETURN_CHAR || *buffer == NEW_LINE_CHAR) return ERROR_CMD_ARG;
 
     int32_t result = strtol(buffer, &end, 10);
 
-    if (*end != EOL && *end != '\r' && *end != '\n') return ERROR_CMD_ARG;
+    if (*end != EOL && *end != RETURN_CHAR && *end != NEW_LINE_CHAR) return ERROR_CMD_ARG;
     return result;
 }
 
@@ -223,16 +224,14 @@ static void cmdLedOff(int32_t arg) { HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_P
 static void cmdLedToggle(int32_t arg) { HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5); }
 
 static void cmdStatus(int32_t arg) {
-    GPIO_PinState state = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_5);
-    char          str[] = "LED is  \r\n";
-    str[7]              = (state == GPIO_PIN_SET) ? '1' : '0';
-    SEND(str);
+    GPIO_PinState st = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_5);
+    char          str[HANDLER_BUFFERS_LEN];
+    uint16_t      len = (uint16_t) snprintf(str, sizeof(str), "LED is %s\r\n", (st == GPIO_PIN_RESET) ? "off" : "on");
+    uartSendStringSize((uint8_t *) str, len);
 }
 
 static void cmdBaudGet(int32_t arg) {
-    (void) arg;
-    /* Build the response string at runtime since baud is a number */
-    char    buf[32];
-    uint8_t len = (uint8_t) snprintf(buf, sizeof(buf), "[BAUD] %u\r\n", uartGetBaud());
-    uartSendStringSize((uint8_t *) buf, len);
+    char     str[HANDLER_BUFFERS_LEN];
+    uint16_t len = (uint16_t) snprintf(str, sizeof(str), "[BAUD] %u\r\n", uartGetBaud());
+    uartSendStringSize((uint8_t *) str, len);
 }

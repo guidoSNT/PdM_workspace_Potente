@@ -2,9 +2,10 @@
 #define API_INC_API_CMDPARSER_H_
 #include <stdint.h>
 
-#define CMD_MAX_LINE   64                  //! Includes the \0
-#define CMD_MAX_TOKENS 3                   //! COMANDO + maximo de argumentos
-#define ERROR_CMD_ARG  -1                  //! Return for the parser when the number getter fails
+#define CMD_MAX_LINE        64             //! Includes the \0
+#define CMD_MAX_TOKENS      3              //! COMANDO + maximo de argumentos
+#define ERROR_CMD_ARG       -1             //! Return for the parser when the number getter fails
+#define HANDLER_BUFFERS_LEN 32             //! For the local buffers
 
 typedef enum {
     CMD_OK = 0,                            //! On success
