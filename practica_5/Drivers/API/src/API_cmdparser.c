@@ -305,9 +305,9 @@ static void cmdBaudSet(int32_t arg) {
     // set the baudrate
     bool_t res = uartSetBaud(arg);
     if (!res) {
-        SEND("Failed to set the baudrate");
+        SEND("Failed to set the baudrate\r\n");
         return;
     }
 
-    SEND("Baudrate changed");
+    SEND("Baudrate changed\r\n");
 }
