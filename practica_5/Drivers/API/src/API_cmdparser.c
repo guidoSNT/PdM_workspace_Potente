@@ -80,7 +80,7 @@ void cmdPoll(void) {
 
     switch (cmd_state) {
         case CMD_IDLE:
-            uartReceiveCharNonBlocking(&curr_var);
+            if (uartReceiveCharNonBlocking(&curr_var) == false) { break; }
 
             // If non-null go to receiving and move the pointer to next place
             if ((char) curr_var != EOL) {
@@ -91,7 +91,7 @@ void cmdPoll(void) {
             break;
 
         case CMD_RECEIVING:
-            uartReceiveCharNonBlocking(&curr_var);
+            if (uartReceiveCharNonBlocking(&curr_var) == false) { break; }
 
             // End of string
             if ((char) curr_var == RETURN_CHAR || (char) curr_var == NEW_LINE_CHAR) {
@@ -217,11 +217,20 @@ static void cmdHelp(int32_t arg) {
     SEND("  BAUD=<n>    -> Set the UART baud rate to <n>\r\n");
 }
 
-static void cmdLedOn(int32_t arg) { HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET); }
+static void cmdLedOn(int32_t arg) {
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+    SEND("LED turned on\r\n");
+}
 
-static void cmdLedOff(int32_t arg) { HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET); }
+static void cmdLedOff(int32_t arg) {
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+    SEND("LED turned off\r\n");
+}
 
-static void cmdLedToggle(int32_t arg) { HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5); }
+static void cmdLedToggle(int32_t arg) {
+    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+    SEND("LED toggled\r\n");
+}
 
 static void cmdStatus(int32_t arg) {
     GPIO_PinState st = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_5);

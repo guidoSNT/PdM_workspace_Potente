@@ -55,17 +55,19 @@ void uartSendStringSize(uint8_t *pstring, uint16_t size) {
     HAL_UART_Transmit(&uart_handle, pstring, size, HAL_MAX_DELAY);
 }
 
-void uartReceiveStringSize(uint8_t *pstring, uint16_t size) {
-    if (pstring == NULL || uart_initialized == false || size >= API_UART_MAX_SIZE) return;
+bool_t uartReceiveStringSize(uint8_t *pstring, uint16_t size) {
+    if (pstring == NULL || uart_initialized == false || size >= API_UART_MAX_SIZE) return false;
 
-    HAL_UART_Receive(&uart_handle, pstring, size, HAL_MAX_DELAY);
+    HAL_StatusTypeDef st_comm = HAL_UART_Receive(&uart_handle, pstring, size, HAL_MAX_DELAY);
+    return (st_comm == HAL_OK) ? true : false;
 }
 
 /*----------Functions implemented for ex. 2---------------*/
-void uartReceiveCharNonBlocking(uint8_t *pstring) {
-    if (pstring == NULL || uart_initialized == false) return;
+bool_t uartReceiveCharNonBlocking(uint8_t *pstring) {
+    if (pstring == NULL || uart_initialized == false) return false;
 
-    HAL_UART_Receive(&uart_handle, pstring, API_UART_ONE_BIT_RECEIVE, API_UART_NON_BLOCKING_TIMEOUT);
+    HAL_StatusTypeDef st_comm = HAL_UART_Receive(&uart_handle, pstring, API_UART_ONE_BIT_RECEIVE, API_UART_NON_BLOCKING_TIMEOUT);
+    return (st_comm == HAL_OK) ? true : false;
 }
 
 int32_t uartGetBaud() { return uart_handle.Init.BaudRate; }

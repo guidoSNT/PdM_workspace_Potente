@@ -70,9 +70,9 @@ void uartSendStringSize(uint8_t *pstring, uint16_t size);
  * @param[in] pstring Pointer to the buffer to store.
  * @param[in] size Size of the buffer.
  *
- * @retval None
+ * @retval True if received else false
  */
-void uartReceiveStringSize(uint8_t *pstring, uint16_t size);
+bool_t uartReceiveStringSize(uint8_t *pstring, uint16_t size);
 
 /**
  * @brief Receive a char in non blocking mode.
@@ -82,9 +82,9 @@ void uartReceiveStringSize(uint8_t *pstring, uint16_t size);
  *
  * @param[in] pstring Pointer to store the char.
  *
- * @retval None
+ * @retval True on success, else false
  */
-void uartReceiveCharNonBlocking(uint8_t *pstring);
+bool_t uartReceiveCharNonBlocking(uint8_t *pstring);
 
 /**
  * @brief Return the current baudrate.
