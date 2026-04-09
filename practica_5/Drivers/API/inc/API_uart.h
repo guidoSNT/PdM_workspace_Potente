@@ -1,30 +1,33 @@
 #ifndef API_INC_API_UART_H_
 #define API_INC_API_UART_H_
-#include "API_delay.h" // for the bool_t
+#include "API_delay.h"                                      // for the bool_t
 #include "stm32f4xx_hal.h"
 
-#define API_UART_MAX_SIZE 256 //! Max size for transmisions
+#define EOL                           '\0'
+#define API_UART_MAX_SIZE             256                   //! Max size for transmisions
+#define API_UART_ONE_BIT_RECEIVE      1                     //! To set the receive to one bit
+#define API_UART_NON_BLOCKING_TIMEOUT 0                     //! To make it non-blocking
 
-#define API_UART_INSTANCE USART2 //! USART instance to use
-#define API_UART_INSTANCE_STR "USART2"
-#define API_UART_BUADRATE 115200       //! Buadrate in bd of the USART
-#define API_UART_WL UART_WORDLENGTH_8B //! Wordlength of 8 bits
-#define API_UART_WL_STR "UART_WORDLENGTH_8B"
-#define API_UART_SB UART_STOPBITS_1 //! one stop bit
-#define API_UART_SB_STR "UART_STOPBITS_1"
-#define API_UART_PARITY UART_PARITY_NONE //! No parity bit
-#define API_UART_PARITY_STR "UART_PARITY_NONE"
-#define API_UART_MODE UART_MODE_TX_RX //! Mode to send and receive
-#define API_UART_MODE_STR "UART_MODE_TX_RX"
-#define API_UART_HWCTL UART_HWCONTROL_NONE //! No control flow
-#define API_UART_HWCTL_STR "UART_HWCONTROL_NONE"
-#define API_UART_OS UART_OVERSAMPLING_16 //! Oversampling enabled
-#define API_UART_OS_STR "UART_OVERSAMPLING_16"
+#define API_UART_INSTANCE             USART2                //! USART instance to use
+#define API_UART_INSTANCE_STR         "USART2"
+#define API_UART_BUADRATE             115200                //! Buadrate in bd of the USART
+#define API_UART_WL                   UART_WORDLENGTH_8B    //! Wordlength of 8 bits
+#define API_UART_WL_STR               "UART_WORDLENGTH_8B"
+#define API_UART_SB                   UART_STOPBITS_1       //! one stop bit
+#define API_UART_SB_STR               "UART_STOPBITS_1"
+#define API_UART_PARITY               UART_PARITY_NONE      //! No parity bit
+#define API_UART_PARITY_STR           "UART_PARITY_NONE"
+#define API_UART_MODE                 UART_MODE_TX_RX       //! Mode to send and receive
+#define API_UART_MODE_STR             "UART_MODE_TX_RX"
+#define API_UART_HWCTL                UART_HWCONTROL_NONE   //! No control flow
+#define API_UART_HWCTL_STR            "UART_HWCONTROL_NONE"
+#define API_UART_OS                   UART_OVERSAMPLING_16  //! Oversampling enabled
+#define API_UART_OS_STR               "UART_OVERSAMPLING_16"
 
 // This macros are needed to convert an macro value to string
 // e.g.: (MACRO_STR(BAUDRATE) -> _MACRO_STR(115200) -> "115200")
-#define MACRO_STR(M) #M
-#define _MACRO_STR(M) MACRO_STR(M)
+#define MACRO_STR(M)                  #M
+#define _MACRO_STR(M)                 MACRO_STR(M)
 
 /**
  * @brief Initializes the UART and sends the config on success
@@ -55,5 +58,36 @@ void uartSendString(uint8_t *pstring);
  * @retval None
  */
 void uartSendStringSize(uint8_t *pstring, uint16_t size);
+
+/**
+ * @brief Receive message up to certain size (blocking function).
+ *
+ * Be aware that using a buffer that is shorter than the size variable can
+ * result in undefined behaviour.
+ *
+ * @param[in] pstring Pointer to the buffer to store.
+ * @param[in] size Size of the buffer.
+ *
+ * @retval None
+ */
 void uartReceiveStringSize(uint8_t *pstring, uint16_t size);
+
+/**
+ * @brief Receive a char in non blocking mode.
+ *
+ * Technically it still is blocking due to the nature of HAL_UART_Receive() but
+ * we haven't used interrupts yet.
+ *
+ * @param[in] pstring Pointer to store the char.
+ *
+ * @retval None
+ */
+void uartReceiveCharNonBlocking(uint8_t *pstring);
+
+/**
+ * @brief Return the current baudrate.
+ *
+ * @retval Baudrate
+ */
+int32_t uartGetBaud();
 #endif /* API_INC_API_UART_H_ */
