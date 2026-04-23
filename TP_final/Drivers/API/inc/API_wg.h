@@ -1,3 +1,11 @@
+/**
+ * @file API_wg.h
+ * @brief Wave generator fsm interface header file.
+ *
+ * Using 6 debounced buttons, ADC phase input, and AD9833
+ * control through a fsm. Outputs status via UART
+ * with ANSI escape codes.
+ */
 #ifndef __API_WG__
 #define __API_WG__
 

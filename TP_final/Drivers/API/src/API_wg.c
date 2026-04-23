@@ -1,3 +1,11 @@
+/**
+ * @file API_wg.c
+ * @brief Wave generator fsm interface source file.
+ *
+ * Using 6 debounced buttons, ADC phase input, and AD9833
+ * control through a fsm. Outputs status via UART
+ * with ANSI escape codes.
+ */
 #include "API_wg.h"
 #include "AD9833_driver.h"
 #include "API_debounce.h"
@@ -7,16 +15,17 @@
 #include <stdio.h>
 #include <string.h>
 
-static uint8_t     btns;                    //! Current state of the buttons
-static uint8_t     curr_pos;
-static uint16_t    curr_phase;
-static char        freq_str[MAX_DIGITS_FREQ + ONE_OFFSET];
-static bool        initialized = false;     //! To check if initialized
-static wg_state_t  wg_st;                   //! State of the fsm
-static button_t    inputs[AMOUNT_BUTTONS];  //! All buttons pressed
-static ad9833_wf_t curr_form;
+static uint8_t     btns;                                    //! Current state of the buttons
+static uint8_t     curr_pos;                                //! Current digit position
+static uint16_t    curr_phase;                              //! Current phase
+static ad9833_wf_t curr_form;                               //! Current wave form
+static char        freq_str[MAX_DIGITS_FREQ + ONE_OFFSET];  //! Str to save the freq
+static bool        initialized = false;                     //! To check if initialized
+static wg_state_t  wg_st;                                   //! State of the fsm
+static button_t    inputs[AMOUNT_BUTTONS];                  //! All buttons pressed
 
 // This has the names for the different waves
+// (there is probably a better solution  with stringify but it works )
 static const char *wf_names[] = {
     [SINE]       = "SINE\r\n",
     [TRIANGULAR] = "TRIANGULAR\r\n",
@@ -63,7 +72,7 @@ static void input_getter();
 /**
  * @brief Converts a uint32_t frequency into freq_str.
  *
- * @input[in] freq Frecuency in dHz
+ * @param[in] freq Frecuency in dHz
  */
 void freq_to_digit(uint32_t freq);
 
@@ -75,13 +84,13 @@ uint32_t digit_to_freq(void);
 /**
  * @brief Increases a specific digit.
  *
- * @input[in] pos position of the digit to change
+ * @param[in] pos position of the digit to change
  */
 void increase_digit(uint8_t pos);
 
 /**
  * @brief Reduces a specific digit.
- * @input[in] pos position of the digit to change
+ * @param[in] pos position of the digit to change
  */
 void reduce_digit(uint8_t pos);
 

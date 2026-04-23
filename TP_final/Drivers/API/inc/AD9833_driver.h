@@ -1,3 +1,9 @@
+/**
+ * @file AD9833_driver.h
+ * @brief AD9833 driver header file.
+ *
+ * Has the functions to interact with the IC without having to manually calculate registers.
+ */
 #ifndef __AD9833_DRIVER__
 #define __AD9833_DRIVER__
 #include <stdbool.h>
@@ -100,7 +106,7 @@ typedef struct {
 /**
  * @brief Initializes the ad9833 and test if it reachable.
  *
- * @input[in] mclk Master clock in MHz (has to be between 0-25).
+ * @param[in] mclk Master clock in MHz (has to be between 0-25).
  *
  * @retval AD_OK on success else depends on the error code
  */

@@ -1,3 +1,9 @@
+/**
+ * @file AD9833_port.c
+ * @brief AD9833 port source file.
+ *
+ * STM32 HAL AD9833 port functionality.
+ */
 #include "AD9833_port.h"
 #include "stm32f4xx_hal_def.h"
 

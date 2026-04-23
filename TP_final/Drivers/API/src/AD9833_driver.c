@@ -1,3 +1,9 @@
+/**
+ * @file AD9833_driver.c
+ * @brief AD9833 driver source file.
+ *
+ * Has the functions to interact with the IC without having to manually calculate registers.
+ */
 #include "AD9833_driver.h"
 #include "AD9833_port.h"
 #include "API_uart.h"
