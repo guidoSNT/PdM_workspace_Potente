@@ -306,14 +306,9 @@ void freq_to_digit(uint32_t freq) {
     freq_str[MAX_DIGITS_FREQ] = EOL;
 }
 
-/**
- * Converts the global char array back into a uint32_t frequency.
- */
 uint32_t digit_to_freq(void) {
     uint32_t val = 0;
-    for (int i = 0; i < MAX_DIGITS_FREQ; i++) {
-        val = (val * DECIMAL_BASE) + (freq_str[i] - ZERO_CHAR);
-    }
+    for (int i = 0; i < MAX_DIGITS_FREQ; i++) { val = (val * DECIMAL_BASE) + (freq_str[i] - ZERO_CHAR); }
     return val;
 }
 

@@ -136,11 +136,10 @@ ad9833_st_t ad9833_set_phase(uint16_t phase, reg_t reg);
  * @brief Sets the control register.
  *
  * @param[in] control Control register configuration.
- * @param[in] keep Keep the rest of the register the same.
  *
  * @retval AD_OK on success else depends on the error code
  */
-ad9833_st_t ad9833_set_control(uint16_t control, bool keep);
+ad9833_st_t ad9833_set_control(uint16_t control);
 
 /**
  * @brief Sets the form.
