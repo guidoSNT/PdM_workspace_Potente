@@ -5,7 +5,6 @@
  * STM32 HAL AD9833 port functionality.
  */
 #include "AD9833_port.h"
-#include "stm32f4xx_hal_def.h"
 
 extern SPI_HandleTypeDef hspi1;
 

@@ -40,3 +40,4 @@ ad9833_spi_st_t write_word(uint16_t word);
  */
 ad9833_spi_st_t spi_init(void);
 #endif  // __AD9833_PORT__
+
