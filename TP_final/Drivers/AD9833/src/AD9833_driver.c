@@ -84,7 +84,7 @@ ad9833_st_t ad9833_set_phase(uint16_t phase, reg_t reg) {
     if (phase > AD9833_PHASE_WORD_MASK) return AD_BAD_ARGUMENT;
 
     uint16_t ctrl_temp  = device.ctrl_reg & ~AD9833_CTRL_B28;
-    ctrl_temp           = (reg == REG_0) ? ctrl_temp | AD9833_CTRL_FSELECT : ctrl_temp & ~AD9833_CTRL_FSELECT;
+    ctrl_temp           = (reg == REG_1) ? ctrl_temp | AD9833_CTRL_PSELECT : ctrl_temp & ~AD9833_CTRL_PSELECT;
     uint16_t phase_reg  = ((uint32_t) phase << AD9833_PHASE_REG_LEN) / (2 * AD9833_PI) - AD9833_CONVERSION_OFFSET;
     uint16_t reg_temp   = (reg == REG_0) ? AD9833_REG_PHASE0 : AD9833_REG_PHASE1;
     phase_reg          &= AD9833_PHASE_WORD_MASK;
@@ -116,7 +116,7 @@ ad9833_st_t ad9833_set_freq(uint32_t freq, reg_t reg) {
     // if the 14 MSB are the same and if the freq_reg has more than 14 bits
     bool     full_tx   = GET_14_MSB(freq_reg) != GET_14_MSB(curr_freq);
     uint16_t ctrl_temp = (full_tx) ? device.ctrl_reg | AD9833_CTRL_B28 : device.ctrl_reg & ~AD9833_CTRL_B28;
-    ctrl_temp          = (reg == REG_0) ? ctrl_temp | AD9833_CTRL_FSELECT : ctrl_temp & ~AD9833_CTRL_FSELECT;
+    ctrl_temp          = (reg == REG_1) ? ctrl_temp | AD9833_CTRL_FSELECT : ctrl_temp & ~AD9833_CTRL_FSELECT;
 
     if (ad9833_set_control(ctrl_temp) != AD_OK) return AD_NO_RESPONSE;
 
