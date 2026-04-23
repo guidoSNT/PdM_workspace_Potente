@@ -1,0 +1,37 @@
+var group__EWIC__Type =
+[
+    [ "Error Banking Registers (IMPLEMENTATION DEFINED)", "group__ErrBnk__Type.html", "group__ErrBnk__Type" ],
+    [ "EWIC_Type", "structEWIC__Type.html", [
+      [ "EVENTMASK", "group__CMSIS__core__DebugFunctions.html#gaf2d507a7cef5ef8c033265fe6f608fda", null ],
+      [ "EVENTMASKA", "group__CMSIS__core__DebugFunctions.html#ga24ea6b6f9eae0b9cec23c3f3d6abbf62", null ],
+      [ "EVENTSPR", "group__CMSIS__core__DebugFunctions.html#ga45ca89af00c344289ee48485278b278e", null ]
+    ] ],
+    [ "EWIC_EVENTMASK_IRQ_Msk", "group__CMSIS__SCB.html#ga0bb83e57c0da0167648b84edc30f71e1", null ],
+    [ "EWIC_EVENTMASK_IRQ_Msk", "group__CMSIS__SCB.html#ga0bb83e57c0da0167648b84edc30f71e1", null ],
+    [ "EWIC_EVENTMASK_IRQ_Pos", "group__CMSIS__SCB.html#gacc49d8f8dbcb8c40e8e925d0849d0fca", null ],
+    [ "EWIC_EVENTMASK_IRQ_Pos", "group__CMSIS__SCB.html#gacc49d8f8dbcb8c40e8e925d0849d0fca", null ],
+    [ "EWIC_EVENTMASKA_EDBGREQ_Msk", "group__CMSIS__SCB.html#ga9d2d846cf9735b1ce04fe05a86395a2b", null ],
+    [ "EWIC_EVENTMASKA_EDBGREQ_Msk", "group__CMSIS__SCB.html#ga9d2d846cf9735b1ce04fe05a86395a2b", null ],
+    [ "EWIC_EVENTMASKA_EDBGREQ_Pos", "group__CMSIS__SCB.html#ga7c574ff89abed6c4e12250ff606a8c22", null ],
+    [ "EWIC_EVENTMASKA_EDBGREQ_Pos", "group__CMSIS__SCB.html#ga7c574ff89abed6c4e12250ff606a8c22", null ],
+    [ "EWIC_EVENTMASKA_EVENT_Msk", "group__CMSIS__SCB.html#ga30d86de6fafda25566d8acac7e4e34be", null ],
+    [ "EWIC_EVENTMASKA_EVENT_Msk", "group__CMSIS__SCB.html#ga30d86de6fafda25566d8acac7e4e34be", null ],
+    [ "EWIC_EVENTMASKA_EVENT_Pos", "group__CMSIS__SCB.html#gae83675b31a946f55f5eef636471213f3", null ],
+    [ "EWIC_EVENTMASKA_EVENT_Pos", "group__CMSIS__SCB.html#gae83675b31a946f55f5eef636471213f3", null ],
+    [ "EWIC_EVENTMASKA_NMI_Msk", "group__CMSIS__SCB.html#ga6b629506418eaba1265efbea8fb8c896", null ],
+    [ "EWIC_EVENTMASKA_NMI_Msk", "group__CMSIS__SCB.html#ga6b629506418eaba1265efbea8fb8c896", null ],
+    [ "EWIC_EVENTMASKA_NMI_Pos", "group__CMSIS__SCB.html#gad971878615fecb4829f205ac5e4bd61d", null ],
+    [ "EWIC_EVENTMASKA_NMI_Pos", "group__CMSIS__SCB.html#gad971878615fecb4829f205ac5e4bd61d", null ],
+    [ "EWIC_EVENTSPR_EDBGREQ_Msk", "group__CMSIS__SCB.html#gab7f2d44cd160d0aa34d2094999e443ff", null ],
+    [ "EWIC_EVENTSPR_EDBGREQ_Msk", "group__CMSIS__SCB.html#gab7f2d44cd160d0aa34d2094999e443ff", null ],
+    [ "EWIC_EVENTSPR_EDBGREQ_Pos", "group__CMSIS__SCB.html#gaf098fbb35ea49879d2163eefb1927fdd", null ],
+    [ "EWIC_EVENTSPR_EDBGREQ_Pos", "group__CMSIS__SCB.html#gaf098fbb35ea49879d2163eefb1927fdd", null ],
+    [ "EWIC_EVENTSPR_EVENT_Msk", "group__CMSIS__SCB.html#gac5b6d21e8054c9ce54c8356e58cf9a52", null ],
+    [ "EWIC_EVENTSPR_EVENT_Msk", "group__CMSIS__SCB.html#gac5b6d21e8054c9ce54c8356e58cf9a52", null ],
+    [ "EWIC_EVENTSPR_EVENT_Pos", "group__CMSIS__SCB.html#ga7c00f61ccc52e2cce1bd3aaa94ca9bca", null ],
+    [ "EWIC_EVENTSPR_EVENT_Pos", "group__CMSIS__SCB.html#ga7c00f61ccc52e2cce1bd3aaa94ca9bca", null ],
+    [ "EWIC_EVENTSPR_NMI_Msk", "group__CMSIS__SCB.html#ga3c174d740f4decb88fc4843782c72604", null ],
+    [ "EWIC_EVENTSPR_NMI_Msk", "group__CMSIS__SCB.html#ga3c174d740f4decb88fc4843782c72604", null ],
+    [ "EWIC_EVENTSPR_NMI_Pos", "group__CMSIS__SCB.html#ga3d7f778b9a4a202facb12e25da1de5be", null ],
+    [ "EWIC_EVENTSPR_NMI_Pos", "group__CMSIS__SCB.html#ga3d7f778b9a4a202facb12e25da1de5be", null ]
+];
