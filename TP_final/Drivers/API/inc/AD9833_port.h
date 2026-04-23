@@ -4,12 +4,12 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define COMM_TIMEOUT_MS 1000 //! Timeout on comm
-#define SIZE_OF_WORD 1       //! Size of the word
-#define PORT_GPIO GPIOA      //! GPIO port for CS
-#define PIN1_GPIO GPIO_PIN_5 //! Pin to the first device
-#define SHIFT_MSB 8          //! Shift to get the MSB
-#define MASK_LSB 0xFF        //! MASK to get the LSB
+#define COMM_TIMEOUT_MS 1000U //! Timeout on comm
+#define SIZE_OF_WORD 2U       //! Size of the word
+#define PORT_GPIO GPIOB       //! GPIO port for CS
+#define PIN1_GPIO GPIO_PIN_6  //! Pin to the first device
+#define SHIFT_MSB 8U          //! Shift to get the MSB
+#define MASK_LSB 0xFFU        //! MASK to get the LSB
 
 typedef enum {
   AD_SPI_OK,        //! If the write was successfull

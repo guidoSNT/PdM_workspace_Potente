@@ -13,10 +13,14 @@ ad9833_spi_st_t spi_init(void) {
 }
 
 ad9833_spi_st_t write_word(uint16_t word) {
-  uint16_t tx = word;
+  uint8_t tx[SIZE_OF_WORD];
+  tx[0] = (uint8_t)(word >> SHIFT_MSB);
+  tx[1] = (uint8_t)(word & MASK_LSB);
+
   ad9833_spi_st_t status = AD_SPI_FAIL;
 
-  switch (HAL_SPI_Transmit(&hspi1, (uint8_t *) &tx, SIZE_OF_WORD, COMM_TIMEOUT_MS)) {
+  switch (
+      HAL_SPI_Transmit(&hspi1, (uint8_t *)&tx, SIZE_OF_WORD, COMM_TIMEOUT_MS)) {
   case HAL_OK:
     status = AD_SPI_OK;
     break;

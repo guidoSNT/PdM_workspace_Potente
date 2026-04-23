@@ -1,80 +1,64 @@
 #include "API_debounce.h"
 #include "API_delay.h"
-#include "stm32f4xx.h"
 
-typedef enum {
-  BUTTON_UP,
-  BUTTON_FALLING,
-  BUTTON_DOWN,
-  BUTTON_RAISING,
-} debounceState_t;
+bool_t readKey(button_t *dev) {
+  if (dev == NULL)
+    return false;
 
-static debounceState_t cur_state;
-static delay_t dly;
-static bool_t pressed;
-
-static void buttonPressed() {
-  // Here it would use the buttonpresed if not for the main usage for the pwm:
-  // HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
-}
-
-static void buttonReleased() {
-  // Here it would use the buttonreleased if not for the main usage for the pwm:
-  // HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
-}
-
-bool_t readKey() {
-  bool_t prev_pressed = pressed;
-  pressed = false;
+  bool_t prev_pressed = dev->pressed;
+  dev->pressed = false;
   return prev_pressed;
 }
 
-void debounceFSM_init() {
-  cur_state = BUTTON_UP;
-  delayInit(&dly, INIT_DELAY_TIME);
+void debounceFSM_init(button_t *dev) {
+  if (dev == NULL)
+    return;
+
+  dev->cur_state = BUTTON_UP;
+  delayInit(&dev->dly, INIT_DELAY_TIME);
+  dev->pressed       = false;
 }
 
-void debounceFSM_update() {
-  GPIO_PinState btn_state = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
+void debounceFSM_update(button_t *dev) {
+  if (dev == NULL)
+    return;
 
-  switch (cur_state) {
+  button_pin_state_t btn_state = debounce_port_read_pin(dev->btn_id);
+
+  switch (dev->cur_state) {
   case BUTTON_UP:
-    if (btn_state == GPIO_PIN_RESET) {
-      if (delayIsRunning(&dly))
-        delayStop(&dly);
+    if (btn_state == BTN_PIN_LOW) {
+      if (delayIsRunning(&dev->dly))
+        delayStop(&dev->dly);
 
-      delayWrite(&dly, TRANSITORY_STATE_TIME);
-      delayRead(&dly);
-      cur_state = BUTTON_FALLING;
+      delayWrite(&dev->dly, TRANSITORY_STATE_TIME);
+      delayRead(&dev->dly);
+      dev->cur_state = BUTTON_FALLING;
     }
     break;
 
   case BUTTON_FALLING:
-    if (delayRead(&dly)) {
-      cur_state = (btn_state == GPIO_PIN_RESET) ? BUTTON_DOWN : BUTTON_UP;
-      if (cur_state == BUTTON_DOWN) {
-        pressed = true;
-        buttonPressed();
-      }
+    if (delayRead(&dev->dly)) {
+      dev->cur_state = (btn_state == BTN_PIN_LOW) ? BUTTON_DOWN : BUTTON_UP;
+      if (dev->cur_state == BUTTON_DOWN)
+        dev->pressed = true;
     }
     break;
 
   case BUTTON_DOWN:
-    if (btn_state == GPIO_PIN_SET) {
-      cur_state = BUTTON_RAISING;
-      if (delayIsRunning(&dly))
-        delayStop(&dly);
+    if (btn_state == BTN_PIN_HIGH) {
+      dev->cur_state = BUTTON_RAISING;
+      if (delayIsRunning(&dev->dly))
+        delayStop(&dev->dly);
 
-      delayWrite(&dly, TRANSITORY_STATE_TIME);
-      delayRead(&dly);
+      delayWrite(&dev->dly, TRANSITORY_STATE_TIME);
+      delayRead(&dev->dly);
     }
     break;
 
   case BUTTON_RAISING:
-    if (delayRead(&dly)) {
-      cur_state = (btn_state == GPIO_PIN_SET) ? BUTTON_UP : BUTTON_DOWN;
-      if (cur_state == BUTTON_UP)
-        buttonReleased();
+    if (delayRead(&dev->dly)) {
+      dev->cur_state = (btn_state == BTN_PIN_HIGH) ? BUTTON_UP : BUTTON_DOWN;
     }
     break;
 
