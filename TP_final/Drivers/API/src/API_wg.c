@@ -170,7 +170,9 @@ bool wg_fsm_update() {
             break;
 
         case WG_ERROR:
-            uartSendStringSize((uint8_t *) "ERROR\r\n", strlen("ERROR\r\n"));
+            // This simple error transmit is because the system may loop the error and remove it from screen.
+            // This means than long Error messages may be lost
+            uartSendStringSize((uint8_t *) ERROR_STR, strlen(ERROR_STR));
             wg_st = WG_IDLE;
             break;
     }

@@ -51,6 +51,7 @@
 
 /*------- To make the string ----------*/
 #define END_FREQ_STR        " Hz\r\n"
+#define ERROR_STR           "ERROR\r\n"
 
 typedef enum {
     WG_IDLE,      //! When it has nothing
