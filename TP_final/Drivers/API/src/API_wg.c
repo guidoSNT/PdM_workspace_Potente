@@ -132,7 +132,7 @@ void wg_fsm_init() {
 }
 
 bool wg_fsm_update() {
-    char buff[100];
+    char buff[FSM_BUFFER_LEN];
     if (initialized != true) return false;
 
     switch (wg_st) {
@@ -312,26 +312,20 @@ void freq_to_digit(uint32_t freq) {
 uint32_t digit_to_freq(void) {
     uint32_t val = 0;
     for (int i = 0; i < MAX_DIGITS_FREQ; i++) {
-        // val * 10 is fast on embedded. The compiler turns it into bit-shifts.
-        // It avoids the need for an expensive pow() or lookup table.
         val = (val * DECIMAL_BASE) + (freq_str[i] - ZERO_CHAR);
     }
     return val;
 }
 
-/**
- * Increases a specific digit, handling carry-over (e.g., 099 -> 100).
- * pos 0 = right-most digit (units), pos 9 = left-most digit.
- */
 void increase_digit(uint8_t pos) {
     while (pos < MAX_DIGITS_FREQ) {
         int idx = MAX_DIGITS_FREQ - ONE_OFFSET - pos;
 
         if (freq_str[idx] == NINE_CHAR) {
-            freq_str[idx] = ZERO_CHAR;  // Roll over to 0
-            pos++;                      // Carry over to the next position
+            freq_str[idx] = ZERO_CHAR;
+            pos++;
         } else {
-            freq_str[idx]++;            // Increment and stop
+            freq_str[idx]++;
             break;
         }
     }
